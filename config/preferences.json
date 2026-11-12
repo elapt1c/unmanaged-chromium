@@ -1,0 +1,62 @@
+{
+  "__comment": "Seeded into Default/Preferences on first run. Chromium normalises and extends this file; edit before building, not after shipping.",
+  "default_search_provider_data": {
+    "template_url_data": {
+      "keyword": "duckduckgo.com",
+      "short_name": "DuckDuckGo",
+      "url": "https://duckduckgo.com/?q={searchTerms}",
+      "suggestions_url": "https://duckduckgo.com/ac/?q={searchTerms}&type=list",
+      "favicon_url": "https://duckduckgo.com/favicon.ico",
+      "safe_for_autoreplace": true,
+      "prepopulate_id": 0,
+      "date_created": "13300000000000000",
+      "last_modified": "0"
+    }
+  },
+  "dns_over_https.mode": "secure",
+  "dns_over_https.templates": "https://dns.quad9.net/dns-query",
+  "webrtc.ip_handling_policy": "disable_non_proxied_udp",
+  "webrtc.multiple_routes_enabled": false,
+  "webrtc.nonproxied_udp_enabled": false,
+  "profile.block_third_party_cookies": true,
+  "profile.default_content_setting_values.cookies": 1,
+  "net.network_prediction_options": 2,
+  "metrics": {
+    "reporting_enabled": false
+  },
+  "safebrowsing": {
+    "enabled": true,
+    "enhanced": false,
+    "scout_reporting_enabled": false
+  },
+  "alternate_error_pages": {
+    "enabled": false
+  },
+  "autofill": {
+    "profile_enabled": false,
+    "credit_card_enabled": false
+  },
+  "credentials_enable_service": false,
+  "credentials_enable_autosignin": false,
+  "signin": {
+    "allowed": false,
+    "allowed_on_next_startup": false
+  },
+  "sync": {
+    "requested": false
+  },
+  "browser": {
+    "has_seen_welcome_page": true,
+    "check_default_browser": false
+  },
+  "download": {
+    "prompt_for_download": false
+  },
+  "privacy_sandbox": {
+    "m1": {
+      "ad_measurement_enabled": false,
+      "topics_enabled": false,
+      "fledge_enabled": false
+    }
+  }
+}

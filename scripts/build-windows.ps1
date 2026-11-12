@@ -20,7 +20,19 @@ try {
     $zip = Join-Path $work 'chrome-win.zip'
     Write-Host '==> downloading chrome-win.zip'
     Invoke-WebRequest -UseBasicParsing "$base/$rev/chrome-win.zip" -OutFile $zip
-    Expand-Archive -Path $zip -DestinationPath $work -Force
+
+    # Expand-Archive is pathologically slow on this archive (thousands of files,
+    # ~250 MB) and was the dominant cost of the build. 7-Zip ships on the Windows
+    # runners and is an order of magnitude faster.
+    $sevenZip = Join-Path $env:ProgramFiles '7-Zip\7z.exe'
+    if (Test-Path $sevenZip) {
+        Write-Host '==> extracting with 7z'
+        & $sevenZip x $zip "-o$work" -y | Out-Null
+        if ($LASTEXITCODE -ne 0) { throw "7z failed with exit code $LASTEXITCODE" }
+    } else {
+        Write-Host '==> extracting with Expand-Archive'
+        Expand-Archive -Path $zip -DestinationPath $work -Force
+    }
 
     if (Test-Path $out) { Remove-Item -Recurse -Force $out }
     New-Item -ItemType Directory -Path $out | Out-Null

@@ -1,6 +1,9 @@
 # unmanaged-chromium
 
-A portable Chromium that **isn't managed by anything**. No enterprise policy, no
+A portable Chromium that **isn't managed in practice** — no policy is provisioned for
+it, nothing enrols it, and none of the Chrome/Edge settings a school or employer
+deploys reach it. Read the correction at the end of this section before treating that
+as immunity. No enterprise policy, no
 MDM enrollment, no forced extensions, no locked search engine, no "managed by your
 organisation" banner. Runs from a folder or a USB stick, keeps its profile next to
 itself, and leaves no services or updaters behind.
@@ -28,6 +31,14 @@ Schools deploy Chrome and Edge GPOs, and ship their ADMX templates. Nobody deplo
 
 Check it yourself at any time: open `chrome://policy`. On a managed school Chrome
 that page lists dozens of entries; here it is empty.
+
+**The honest limit of that.** The policy engine is still compiled into this binary and
+it still works. Writing `/etc/chromium/policies/managed/*.json` (Linux) or
+`HKLM\SOFTWARE\Policies\Chromium` (Windows) *does* control this build — verified, with
+a screenshot in `docs/proof-policy-applies.png`. What protects you is that nobody
+provisions that namespace, not that the capability is absent. Making it truly absent
+requires patching Chromium's policy loaders and building from source; see
+`docs/CANNOT-DO.md`.
 
 ## What it deliberately does not do (read this)
 

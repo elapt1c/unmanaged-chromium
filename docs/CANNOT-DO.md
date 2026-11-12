@@ -23,6 +23,28 @@ Includes, all of which are policy-driven in Chrome and absent here:
 policy token. Open-source Chromium snapshots carry no enrollment state, so there is
 nothing to enrol and no cloud policy fetch to obey.
 
+**BUT — the policy engine is still in the binary, and it still works.** This is the
+honest correction to everything above, verified by test rather than assumed: writing
+`/etc/chromium/policies/managed/hijack-test.json` with
+`DefaultSearchProviderEnabled: false` and launching this build showed Chrome Policies
+→ `DefaultSearchProvi... false`, source **Platform**
+(`docs/proof-policy-applies.png`). On Windows the equivalent is
+`HKLM\SOFTWARE\Policies\Chromium`.
+
+So the namespace being unprovisioned is *obscurity, not immunity*. Anyone who can
+write that path — a domain admin, a provisioning script, an OS package with a
+post-install hook — can force extensions, lock the search engine and block URLs in
+this build exactly as they would in Chrome. They have to know to target
+`Policies\Chromium` rather than `Policies\Google\Chrome`, and nothing prompts them
+to, but the capability is there and it is not theoretical.
+
+Removing it means patching Chromium's policy loaders and rebuilding from source
+(`components/policy/core/common/policy_loader_*.cc` returning an empty policy set).
+That is a full Chromium build: hours of wall-clock time, ~100 GB of disk, a machine
+with far more cores than the one this ships from. It is not a flag, and no packaged
+binary can promise it. Until such a build exists, describe this project as
+"unmanaged in practice", never as "cannot be managed".
+
 **Default-browser and first-run hijacking.** `--no-first-run` /
 `--no-default-browser-check`, plus a profile that lives beside the binary.
 

@@ -11,47 +11,35 @@ permissions:
   contents: write
 
 jobs:
-  linux:
+  build:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: Build portable package
+
+      - name: Build Linux package
         run: ./scripts/build-linux.sh
+
+      - name: Build Windows package
+        run: ./scripts/build-windows.sh
+
       - name: Archive
-        run: tar -czf unmanaged-chromium-linux-x64.tar.gz -C dist unmanaged-chromium-linux-x64
+        run: |
+          tar -czf unmanaged-chromium-linux-x64.tar.gz -C dist unmanaged-chromium-linux-x64
+          (cd dist && zip -qr ../unmanaged-chromium-windows-x64.zip unmanaged-chromium-windows-x64)
+          ls -lh unmanaged-chromium-*
+
       - uses: actions/upload-artifact@v4
         with:
-          name: unmanaged-chromium-linux-x64
-          path: unmanaged-chromium-linux-x64.tar.gz
+          name: unmanaged-chromium
+          path: |
+            unmanaged-chromium-linux-x64.tar.gz
+            unmanaged-chromium-windows-x64.zip
           retention-days: 14
 
-  windows:
-    runs-on: windows-latest
-    timeout-minutes: 25
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build portable package
-        shell: powershell
-        run: powershell -ExecutionPolicy Bypass -File scripts\build-windows.ps1
-      - name: Archive
-        shell: powershell
-        run: Compress-Archive -Path dist\unmanaged-chromium-windows-x64 -DestinationPath unmanaged-chromium-windows-x64.zip
-      - uses: actions/upload-artifact@v4
-        with:
-          name: unmanaged-chromium-windows-x64
-          path: unmanaged-chromium-windows-x64.zip
-          retention-days: 14
-
-  release:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: [linux, windows]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          merge-multiple: true
-      - uses: softprops/action-gh-release@v2
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             unmanaged-chromium-linux-x64.tar.gz

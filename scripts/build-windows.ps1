@@ -33,11 +33,14 @@ try {
     Copy-Item (Join-Path $repoRoot 'docs\CANNOT-DO.md') (Join-Path $out 'CANNOT-DO.md')
     Set-Content -Path (Join-Path $out 'CHROMIUM_REV') -Value $rev
 
-    # Smoke test: the binary must start and print a version.
-    Write-Host '==> smoke test'
-    $ver = & (Join-Path $out 'chromium\chrome.exe') --version 2>&1 | Select-Object -First 1
-    if (-not $ver) { throw 'chrome.exe produced no version output' }
-    Write-Host "    $ver"
+    # Presence check only. chrome.exe is a GUI-subsystem binary on Windows: it
+    # writes nothing to stdout for --version, so invoking it opens a window and
+    # the build waits on it forever.
+    Write-Host '==> verify'
+    $exe = Join-Path $out 'chromium\chrome.exe'
+    if (-not (Test-Path $exe)) { throw "chrome.exe missing at $exe" }
+    $mb = [math]::Round((Get-Item $exe).Length / 1MB, 1)
+    Write-Host "    chrome.exe present ($mb MB)"
 
     Write-Host "==> done: $out"
 }

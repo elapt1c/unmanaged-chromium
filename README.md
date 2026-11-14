@@ -112,6 +112,11 @@ Encrypted Client Hello is enabled in the launcher, so SNI-based filtering has no
 to match on for sites that publish ECH configs (most Cloudflare-fronted ones do). It
 needs the DoH resolver from `config/preferences.json`, which is why both ship together.
 
+Coverage is decided by the destination, not the browser: ECH works for sites that publish
+ECH configs (most of Cloudflare's front), and does nothing for Google, Meta or Amazon,
+which do not. `config/relay.txt` takes a SOCKS5 endpoint for everything else —
+`docs/DPI.md` has the matrix and the limits.
+
 Packet-level DPI evasion — GoodbyeDPI, zapret, byedpi — cannot live inside a browser:
 it rewrites segments, TTLs or checksums, which needs a driver or root. Those are
 documented as optional companions in `docs/DPI.md`, along with an honest account of

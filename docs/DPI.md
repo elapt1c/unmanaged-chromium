@@ -67,6 +67,28 @@ Good pairings, in order of convenience:
 None of them are vendored here: they are separately licensed, they update often,
 and shipping a driver blob inside a browser package is a bad idea.
 
+## Coverage, honestly
+
+"What does SNI hiding cover" has a precise answer, and it is not "everything":
+
+| mechanism | hides SNI from the filter | covers | needs |
+|---|---|---|---|
+| ECH | yes | sites that publish ECH configs — most Cloudflare-fronted ones | nothing |
+| relay (`config/relay.txt`) | yes | **every** site | a proxy you control |
+| QUIC / HTTP-3 | no, but many filters only parse TCP | sites offering h3 | nothing (already on) |
+| DoH | no (hides DNS names only) | — | nothing |
+
+The big Cloudflare-hosted web — Discord, Reddit, Medium, most forums, a large
+share of smaller sites — publishes ECH. Google, Meta and Amazon do not, so ECH
+does nothing for YouTube, Gmail or Instagram; for those, only a relay helps,
+because there is no way to hide a name the server refuses to encrypt.
+
+That is the whole reason the launcher reads `config/relay.txt`: put a SOCKS5
+endpoint you control in it and every site goes through it; leave it empty and you
+get ECH plus direct connections. Nothing "smart" can beat that arithmetic —
+coverage is decided by whether the destination supports ECH, not by browser
+configuration.
+
 ## What none of this does
 
 - **IP-level blocking.** If the network drops packets to a destination address,

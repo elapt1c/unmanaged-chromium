@@ -1,0 +1,3 @@
+# Optional relay: one per line, first is used.
+# e.g. socks5://10.0.0.30:1080  (or just host:port for SOCKS5)
+# Leave empty/commented to go direct with Encrypted Client Hello.

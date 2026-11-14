@@ -140,8 +140,14 @@ def tls_probe(ip: str, host: str):
     ctx = ssl.create_default_context()
     try:
         with ctx.wrap_socket(s, server_hostname=host) as tls:
-            cn = tls.getpeercert().get("subject", [[("CN", "?")]])[0][0][1]
-            return "tls-ok", f"tls={tls.version()} cn={cn} cipher={tls.cipher()[0]}"
+            cert = tls.getpeercert()
+            # Subject RDNs are tuples of tuples; walk them for commonName. Falling
+            # back to subject[0][0][1] reported "US" for SAN-only certs.
+            cn = next((v for rdn in cert.get("subject", ())
+                       for (k, v) in rdn if k == "commonName"), None)
+            sans = [v for k, v in cert.get("subjectAltName", ()) if k == "DNS"][:3]
+            name = cn or ("SAN:" + ",".join(sans) if sans else "?")
+            return "tls-ok", f"tls={tls.version()} cn={name} cipher={tls.cipher()[0]}"
     except ssl.SSLCertVerificationError as e:
         return "tls-cert", f"verify: {e.verify_message or e}"
     except (ssl.SSLError, ConnectionResetError, BrokenPipeError, socket.timeout, OSError) as e:

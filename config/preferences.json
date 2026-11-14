@@ -58,5 +58,8 @@
       "topics_enabled": false,
       "fledge_enabled": false
     }
+  },
+  "https_first_mode": {
+    "enabled": true
   }
 }

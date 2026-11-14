@@ -45,4 +45,5 @@ exec "$BIN" \
   --disable-client-side-phishing-detection \
   --metrics-recording-only \
   --disable-features=OptimizationHints,MediaRouter,InterestFeedContentSuggestions,Translate,AutofillServerCommunication \
+  --enable-features=EncryptedClientHello \
   "$@"

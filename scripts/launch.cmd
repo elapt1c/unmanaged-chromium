@@ -32,6 +32,7 @@ start "" "%BIN%" ^
   --disable-breakpad ^
   --disable-client-side-phishing-detection ^
   --disable-features=OptimizationHints,MediaRouter,InterestFeedContentSuggestions,Translate,AutofillServerCommunication ^
+  --enable-features=EncryptedClientHello ^
   %*
 
 endlocal

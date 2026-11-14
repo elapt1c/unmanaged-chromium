@@ -106,6 +106,17 @@ proxied UDP, no Safe Browsing uploads, no autofill/telemetry reporting.
 
 Edit `config/preferences.json` before building if you want different defaults.
 
+## Censorship resistance
+
+Encrypted Client Hello is enabled in the launcher, so SNI-based filtering has nothing
+to match on for sites that publish ECH configs (most Cloudflare-fronted ones do). It
+needs the DoH resolver from `config/preferences.json`, which is why both ship together.
+
+Packet-level DPI evasion — GoodbyeDPI, zapret, byedpi — cannot live inside a browser:
+it rewrites segments, TTLs or checksums, which needs a driver or root. Those are
+documented as optional companions in `docs/DPI.md`, along with an honest account of
+what neither approach beats (IP blocks, TLS interception, traffic analysis).
+
 ## Licence
 
 Chromium itself is BSD-3-Clause; the snapshots are unmodified Google builds and

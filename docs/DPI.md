@@ -73,15 +73,21 @@ and shipping a driver blob inside a browser package is a bad idea.
 
 | mechanism | hides SNI from the filter | covers | needs |
 |---|---|---|---|
-| ECH | yes | sites that publish ECH configs — most Cloudflare-fronted ones | nothing |
+| ECH | yes | only sites that turned ECH on | nothing |
 | relay (`config/relay.txt`) | yes | **every** site | a proxy you control |
 | QUIC / HTTP-3 | no, but many filters only parse TCP | sites offering h3 | nothing (already on) |
 | DoH | no (hides DNS names only) | — | nothing |
 
-The big Cloudflare-hosted web — Discord, Reddit, Medium, most forums, a large
-share of smaller sites — publishes ECH. Google, Meta and Amazon do not, so ECH
-does nothing for YouTube, Gmail or Instagram; for those, only a relay helps,
-because there is no way to hide a name the server refuses to encrypt.
+Measured, not assumed: of the sites this project tested, **only the ECH test
+domains answered with an ECH config** — `crypto.cloudflare.com` and `defo.ie`.
+Cloudflare, Discord, Reddit, Google and YouTube either publish no HTTPS RR at all
+or publish one without `ech`. ECH on Cloudflare is opt-in per zone, so "runs on
+Cloudflare" does not mean "hides its SNI".
+
+That is why the relay is the primary mechanism and ECH is the bonus: for almost
+every real site today, the only way to keep the name off the wire is to connect
+to something else first. `scripts/probe.py` prints the `ech` column so the claim
+can be re-checked on the network that matters instead of taken on faith.
 
 That is the whole reason the launcher reads `config/relay.txt`: put a SOCKS5
 endpoint you control in it and every site goes through it; leave it empty and you

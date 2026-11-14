@@ -48,6 +48,16 @@ if [ -s "$HERE/config/relay.txt" ]; then
   fi
 fi
 
+# Smart fallback: if nothing is configured but a local DPI-desync proxy is already
+# running (byedpi/ciadpi listens on 1080 by default), use it. That is the one case
+# where packet-level evasion works — the tool needs root, the browser does not.
+if [ ${#RELAY_ARGS[@]} -eq 0 ] && command -v ss >/dev/null 2>&1; then
+  if ss -ltn 2>/dev/null | grep -qE '127\.0\.0\.1:1080\b'; then
+    RELAY_ARGS=("--proxy-server=socks5://127.0.0.1:1080" "--proxy-bypass-list=<-loopback>")
+    echo "using local desync proxy at 127.0.0.1:1080" >&2
+  fi
+fi
+
 exec "$BIN" \
   "${RELAY_ARGS[@]}" \
   --user-data-dir="$PROFILE" \

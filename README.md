@@ -106,6 +106,15 @@ proxied UDP, no Safe Browsing uploads, no autofill/telemetry reporting.
 
 Edit `config/preferences.json` before building if you want different defaults.
 
+## Windows
+
+The policy-free build is currently **Linux x64 only**. Chromium does support
+cross-compiling `chrome.exe` on Linux, but depot_tools needs Microsoft's toolchain
+packaged on a Windows machine first (MSVC + Windows SDK are not redistributable in
+the form it wants) — see `docs/WINDOWS-BUILD.md` for the one-time step and the
+script. Until a Windows 10/11 box is available, the Windows zip on the releases page
+is upstream Chromium: unmanaged in practice, but with its policy engine intact.
+
 ## Censorship resistance
 
 Encrypted Client Hello is enabled in the launcher, so SNI-based filtering has nothing

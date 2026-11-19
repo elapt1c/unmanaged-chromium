@@ -34,7 +34,9 @@ mv "$WORK/chrome-win" "$OUT/chromium"
 sed 's/$/\r/' "$REPO_ROOT/scripts/launch.cmd" > "$OUT/launch.cmd"
 mkdir -p "$OUT/config"
 cp "$REPO_ROOT/config/preferences.json" "$OUT/config/preferences.json"
+cp "$REPO_ROOT/config/relay.txt" "$OUT/config/relay.txt" 2>/dev/null || true
 cp "$REPO_ROOT/README.md" "$OUT/README.md"
+cp "$REPO_ROOT/docs/DPI.md" "$OUT/DPI.md" 2>/dev/null || true
 cp "$REPO_ROOT/docs/CANNOT-DO.md" "$OUT/CANNOT-DO.md"
 printf '%s\n' "$REV" > "$OUT/CHROMIUM_REV"
 
